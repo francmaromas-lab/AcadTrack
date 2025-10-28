@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AcadTrack | ICT Strand Activity Monitoring System</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body style="background-image: url('images/background.jpg');
+             background-size: cover;
+             background-repeat: no-repeat;
+             background-position: center;">
+
+
+  <!-- Header / Navigation -->
+  <header class="navbar">
+    <div class="logo-area">
+      <img src="images/logo.jpg" alt="logo" class="logo">
+      <h1>AcadTrack</h1>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="login.html" class="btn-login">Login</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h2 class="fade-in">Track Your Tasks.<br><span>Beat Your Deadlines.</span></h2>
+      <p class="slide-up">AcadTrack helps ICT students stay organized, motivated, and productive.</p>
+      <div class="hero-buttons">
+        <a href="login.html" class="btn primary">Get Started</a>
+        <a href="about.html" class="btn secondary">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Preview Section -->
+  <section class="about-preview">
+    <h2>What is AcadTrack?</h2>
+    <div class="about-cards">
+      <div class="card">
+        <h3>📘 Organized Activity Tracking</h3>
+        <p>Monitor your tasks and submissions easily through a smart dashboard.</p>
+      </div>
+      <div class="card">
+        <h3>🧠 Smart & Simple Design</h3>
+        <p>Designed to be user-friendly and visually clear for both students and admins.</p>
+      </div>
+      <div class="card">
+        <h3>💡 Empower ICT Learners</h3>
+        <p>Encourages accountability, responsibility, and digital growth among students.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 AcadTrack | Developed by ICT Students of Santa Rosa National High School</p>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+
+  <script>
+  // Auto-load the register popup HTML
+  fetch("register-popup.html")
+    .then(res => res.text())
+    .then(data => {
+      document.body.insertAdjacentHTML("beforeend", data);
+
+      const modal = document.getElementById('registerModal');
+      const closeBtn = document.querySelector('.close');
+      const registerLinks = document.querySelectorAll('.signup-link');
+
+      registerLinks.forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          modal.style.display = 'flex';
+        });
+      });
+
+      closeBtn.addEventListener('click', () => modal.style.display = 'none');
+
+      window.addEventListener('click', e => {
+        if (e.target === modal) modal.style.display = 'none';
+      });
+    });
+</script>
+
+</body>
+</html>

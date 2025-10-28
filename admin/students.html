@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AcadTrack Admin - Students</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
+body { display:flex; min-height:100vh; background-color:#f4f6f9; color:#333; }
+
+/* Sidebar */
+.sidebar { width:250px; background:#1e3a8a; color:white; display:flex; flex-direction:column; padding:20px; position:fixed; height:100%; box-shadow:2px 0 10px rgba(0,0,0,0.2);}
+.sidebar h2 { text-align:center; margin-bottom:30px; font-size:22px; letter-spacing:1px; }
+.sidebar a { text-decoration:none; color:pink; padding:12px 15px; border-radius:10px; margin-bottom:10px; display:block; transition:0.3s;}
+.sidebar a:hover, .sidebar a.active { background:#2563eb; }
+
+/* Main content */
+.main { margin-left:260px; padding:20px 40px; width:100%; transition:all 0.3s; }
+.topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.topbar h1 { font-size:24px; font-weight:600; }
+
+/* Cards */
+.card { background:orchid; padding:20px; border-radius:16px; box-shadow:0 2px 15px rgba(0,0,0,0.1); margin-bottom:20px; transition:transform 0.2s ease; }
+.card:hover { transform:translateY(-5px); }
+
+/* Form */
+form input { padding:10px; margin-right:10px; margin-bottom:10px; border-radius:6px; border:1px solid #ccc; }
+form button { padding:10px 15px; border:none; background:#2563eb; color:white; border-radius:6px; cursor:pointer; transition:0.3s; }
+form button:hover { background:#1d4ed8; }
+
+/* Table */
+table { width:100%; border-collapse:collapse; margin-top:10px; box-shadow:0 2px 8px rgba(0,0,0,0.05); border-radius:8px; overflow:hidden; }
+th, td { padding:12px; text-align:left; }
+th { background:#1e3a8a; color:white; }
+tr:nth-child(even) { background:#f9fafb; }
+tr:hover { background:#e0f2fe; transition:0.2s; }
+
+/* Action Buttons */
+.action-btn button { margin-right:5px; padding:5px 10px; border:none; border-radius:5px; cursor:pointer; }
+.edit-btn { background:#f59e0b; color:white; }
+.delete-btn { background:#ef4444; color:white; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>AcadTrack Admin</h2>
+  <a href="dashboard.html" class="active"><i>🏠</i> Dashboard</a>
+  <a href="calendar.html"><i>📅</i> Calendar</a>
+  <a href="manage_activities.html"><i>📝</i> Activities</a>
+  <a href="reports.html"><i>📂</i> Reports</a>
+  <a href="students.html"><i>👥</i> Students</a>
+  <a href="../logout.html"><i>🔓</i> Logout</a>
+</div>
+<div class="main">
+<div class="topbar">
+<h1>Students</h1>
+<p>Welcome, Admin 👋</p>
+</div>
+
+<!-- Add Student Form -->
+<div class="card">
+<h3>Add New Student</h3>
+<form id="addStudentForm">
+<input type="text" id="studentName" placeholder="Full Name" required>
+<input type="text" id="studentID" placeholder="Student ID" required>
+<input type="text" id="studentStrand" placeholder="Strand / Section" required>
+<button type="submit">Add Student</button>
+</form>
+</div>
+
+<!-- Students Table -->
+<div class="card">
+<h3>Students List</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>ID</th>
+<th>Strand / Section</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="studentsTableBody">
+<tr><td colspan="5" style="text-align:center; color:gray;">No students found</td></tr>
+</tbody>
+</table>
+</div>
+
+<script>
+// Load students from localStorage
+let students = JSON.parse(localStorage.getItem('students') || '[]');
+
+// Render table
+function renderStudents(){
+    const tbody = document.getElementById('studentsTableBody');
+    tbody.innerHTML = '';
+    if(students.length === 0){
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:gray;">No students found</td></tr>';
+        return;
+    }
+    students.forEach((s,index)=>{
+        tbody.innerHTML += `<tr>
+        <td>${index+1}</td>
+        <td>${s.name}</td>
+        <td>${s.id}</td>
+        <td>${s.strand}</td>
+        <td class="action-btn">
+            <button class="edit-btn" onclick="editStudent(${index})">Edit</button>
+            <button class="delete-btn" onclick="deleteStudent(${index})">Delete</button>
+        </td>
+        </tr>`;
+    });
+}
+
+// Add Student
+document.getElementById('addStudentForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = document.getElementById('studentName').value;
+    const id = document.getElementById('studentID').value;
+    const strand = document.getElementById('studentStrand').value;
+    students.push({name,id,strand});
+    localStorage.setItem('students', JSON.stringify(students));
+    renderStudents();
+    this.reset();
+});
+
+// Edit Student
+function editStudent(index){
+    const s = students[index];
+    const name = prompt("Edit Name:", s.name);
+    const id = prompt("Edit ID:", s.id);
+    const strand = prompt("Edit Strand / Section:", s.strand);
+    if(name && id && strand){
+        students[index] = {name,id,strand};
+        localStorage.setItem('students', JSON.stringify(students));
+        renderStudents();
+    }
+}
+
+// Delete Student
+function deleteStudent(index){
+    if(confirm("Are you sure you want to delete this student?")){
+        students.splice(index,1);
+        localStorage.setItem('students', JSON.stringify(students));
+        renderStudents();
+    }
+}
+
+// Initialize
+renderStudents();
+</script>
+
+</body>
+</html>

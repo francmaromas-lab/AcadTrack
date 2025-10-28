@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  display: flex;
+  background: linear-gradient(120deg, pink, blue);
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: #1e1f28;
+  color: orchid;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  transition: width 0.3s;
+}
+.sidebar h2 {
+  margin-bottom: 40px;
+  text-align: center;
+}
+.sidebar a {
+  color: #ccc;
+  text-decoration: none;
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  border-radius: 10px;
+  display: block;
+  transition: all 0.3s;
+}
+.sidebar a:hover {
+  background: linear-gradient(90deg, #ff6b6b, #f7b733);
+  color: #fff;
+  transform: translateX(5px);
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 30px;
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.topbar h1 {
+  font-size: 28px;
+  color: #1e1f28;
+}
+.topbar .user {
+  font-weight: 600;
+  color: #1e1f28;
+}
+
+/* Cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.card {
+  padding: 20px;
+  border-radius: 15px;
+  color: yellowgreen;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Card Colors */
+.card-students { background: #ff6b6b; }
+.card-activities { background: #4ecdc4; }
+.card-reports { background: #556270; }
+.card-calendar { background: #f7b733; }
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.3s, background 0.3s;
+  margin-right: 10px;
+}
+.btn-add { background: #1dd1a1; }
+.btn-view { background: #54a0ff; }
+.btn:hover { transform: scale(1.05); opacity: 0.9; }
+
+/* Tables */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.styled-table th, .styled-table td {
+  padding: 12px 15px;
+  text-align: left;
+}
+.styled-table thead {
+  background-color: #556270;
+  color: pink;
+  font-weight: 600;
+}
+.styled-table tbody tr {
+  background-color: pink;
+  transition: background 0.3s;
+}
+.styled-table tbody tr:hover { background-color: pink; }
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  display: flex;
+  background: linear-gradient(120deg, pink, blue);
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: #1e1f28;
+  color: orangered;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  transition: width 0.3s;
+}
+.sidebar h2 {
+  margin-bottom: 40px;
+  text-align: center;
+}
+.sidebar a {
+  color: green;
+  text-decoration: none;
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  border-radius: 10px;
+  display: block;
+  transition: all 0.3s;
+}
+.sidebar a:hover {
+  background: linear-gradient(90deg, #ff6b6b, #f7b733);
+  color: pink;
+  transform: translateX(5px);
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 30px;
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.topbar h1 {
+  font-size: 28px;
+  color: #1e1f28;
+}
+.topbar .user {
+  font-weight: 600;
+  color: #1e1f28;
+}
+
+/* Cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.card {
+  padding: 20px;
+  border-radius: 15px;
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Card Colors */
+.card-students { background: #ff6b6b; }
+.card-activities { background: #4ecdc4; }
+.card-reports { background: #556270; }
+.card-calendar { background: #f7b733; }
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.3s, background 0.3s;
+  margin-right: 10px;
+}
+.btn-add { background: #1dd1a1; }
+.btn-view { background: #54a0ff; }
+.btn:hover { transform: scale(1.05); opacity: 0.9; }
+
+/* Tables */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.styled-table th, .styled-table td {
+  padding: 12px 15px;
+  text-align: left;
+}
+.styled-table thead {
+  background-color: #556270;
+  color: goldenrod;
+  font-weight: 600;
+}
+.styled-table tbody tr {
+  background-color: violet;
+  transition: background 0.3s;
+}
+.sidebar.collapsed {
+  width: 70px;
+}
+.sidebar.collapsed a {
+  text-align: center;
+  padding: 10px 0;
+}
+.sidebar.collapsed h2 {
+  display: none;
+}
+
+.styled-table tbody tr:hover { background-color: yellowgreen; }

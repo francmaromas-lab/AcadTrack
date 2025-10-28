@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AcadTrack Student Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+  --primary:#6C63FF; --accent:#00C9A7; --bg:#F9F9FF; --text:#2E2E2E;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text)}
+.sidebar{width:250px;background:var(--primary);color:#fff;height:100vh;position:fixed;padding:22px 18px}
+.sidebar h2{font-size:20px;margin:8px 0 20px}
+.sidebar a{display:block;color:#fff;text-decoration:none;padding:10px;border-radius:8px;margin-bottom:8px;opacity:.95}
+.sidebar a.active, .sidebar a:hover{background:linear-gradient(90deg,var(--primary),#3b82f6)}
+.main{margin-left:270px;padding:28px}
+.topbar{display:flex;justify-content:space-between;align-items:center}
+.card{background:violet;padding:18px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.06);margin-top:18px}
+.stats{display:flex;gap:18px}
+.stat{flex:1;padding:18px;border-radius:12px;color:#fff;font-weight:600}
+.stat.total{background:linear-gradient(135deg,var(--primary),#3b82f6)}
+.stat.up{background:linear-gradient(135deg,#00C9A7,#3b82f6);color:#04323b}
+.stat.over{background:linear-gradient(135deg,#ff7a7a,#ef4444)}
+.small-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.upcoming-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;border-left:4px solid var(--primary);background:#fff}
+.canvas-wrap{margin-top:12px}
+.footer-note{color:#666;font-size:13px;margin-top:8px}
+@media (max-width:800px){ .sidebar{position:relative;width:100%;height:auto} .main{margin-left:0;padding:16px} .stats{flex-direction:column} }
+</style>
+</head>
+<body>
+<script>
+function goBack(){
+    window.location.href='../welcome.html'; // adjust path depende sa folder
+}
+</script>
+
+  <nav class="sidebar">
+<h2>AcadTrack Student</h2>
+  <a href="dashboard.html"><i>🏠</i> Dashboard</a>
+  <a href="activities.html"><i>📋</i> Activities</a>
+  <a href="calendar.html"><i>📅</i> Calendar</a>
+  <a href="profile.html" class="active"><i>👤</i> Profile</a>
+  <a href="../logout.html" style="margin-top:12px"><i>🚪</i> Logout</a>
+</nav>
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="greeting">Welcome</h1>
+        <p style="color:#666;margin-top:4px">AcadTrack — ICT Strand Activity Monitoring System</p>
+        <button onclick="goBack()">Back</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="stats">
+        <div class="stat total">
+          <div>Total Activities</div>
+          <div id="totalActivities" style="font-size:24px;margin-top:8px">0</div>
+        </div>
+        <div class="stat up">
+          <div>Upcoming (7 days)</div>
+          <div id="upcomingActivities" style="font-size:24px;margin-top:8px">0</div>
+        </div>
+        <div class="stat over">
+          <div>Overdue</div>
+          <div id="overdueActivities" style="font-size:24px;margin-top:8px">0</div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px">
+        <h3 style="margin:0 0 10px 0">Next Activities</h3>
+        <div id="nextList" class="small-list"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px 0">Monthly Overview</h3>
+      <div class="canvas-wrap">
+        <canvas id="monthlyChart" height="80"></canvas>
+      </div>
+      <p class="footer-note">Chart shows activity count per month (from stored activities)</p>
+    </div>
+  </main>
+
+<script>
+// --- seed sample data if empty ---
+if(!localStorage.getItem('activities') || JSON.parse(localStorage.getItem('activities')).length===0){
+  const sample = [
+    {id:1, title:"Quiz 1", desc:"Chapter 1 quiz", date:"2025-10-28"},
+    {id:2, title:"Web Project", desc:"Build a simple site", date:"2025-11-05"},
+    {id:3, title:"Lab Submission", desc:"Networking lab", date:"2025-10-24"}
+  ];
+  localStorage.setItem('activities', JSON.stringify(sample));
+}
+if(!localStorage.getItem('studentProfile')){
+  localStorage.setItem('studentProfile', JSON.stringify({name:"", strand:"", email:""}));
+}
+
+// --- utility functions ---
+const activities = ()=> JSON.parse(localStorage.getItem('activities') || '[]');
+const profile = JSON.parse(localStorage.getItem('studentProfile'));
+
+document.getElementById('greeting').textContent = `Welcome, ${profile.name}`;
+
+// --- calculate stats and next activities ---
+function calcStats(){
+  const now = new Date();
+  const list = activities();
+  const total = list.length;
+  const upcoming = list.filter(a=>{
+    const diff = (new Date(a.date) - now)/(1000*60*60*24);
+    return diff >=0 && diff <=7;
+  }).length;
+  const overdue = list.filter(a=> new Date(a.date) < now).length;
+
+  document.getElementById('totalActivities').textContent = total;
+  document.getElementById('upcomingActivities').textContent = upcoming;
+  document.getElementById('overdueActivities').textContent = overdue;
+
+  // next 5 activities
+  const next = list.slice().sort((a,b)=> new Date(a.date)-new Date(b.date)).slice(0,5);
+  const el = document.getElementById('nextList'); el.innerHTML='';
+  next.forEach(a=>{
+    const diffDays = Math.round((new Date(a.date)-now)/(1000*60*60*24));
+    const node = document.createElement('div');
+    node.className='upcoming-item';
+    node.innerHTML = `<div>
+        <strong>${a.title}</strong><br/><small style="color:#666">${a.desc}</small>
+      </div>
+      <div style="text-align:right"><small style="color:#666">${a.date}</small><br/><small style="color:#666">${diffDays>=0?diffDays+'d':'past'}</small></div>`;
+    el.appendChild(node);
+  });
+}
+
+// --- render monthly chart ---
+let chartInst;
+function renderChart(){
+  const ctx = document.getElementById('monthlyChart').getContext('2d');
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const data = new Array(12).fill(0);
+  activities().forEach(a=>{
+    const m = new Date(a.date).getMonth();
+    data[m]++;
+  });
+  if(chartInst) chartInst.destroy();
+  chartInst = new Chart(ctx, {
+    type:'bar',
+    data:{labels:months, datasets:[{label:'Activities',data:data, backgroundColor:'#6C63FF'}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true, precision:0}}}
+  });
+}
+
+// --- initialize ---
+calcStats();
+renderChart();
+</script>
+</body>
+</html>

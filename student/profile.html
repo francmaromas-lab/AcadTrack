@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile — AcadTrack</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#6C63FF;
+  --accent:#00C9A7;
+  --bg:#F9F9FF;
+  --text:#2E2E2E;
+  --card-shadow: rgba(0,0,0,0.1);
+  --transition: 0.3s ease-in-out;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  font-family:'Poppins',sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background var(--transition), color var(--transition);
+}
+
+/* Sidebar */
+.sidebar{
+  width:250px;
+  background: var(--primary);
+  color:#fff;
+  height:100vh;
+  position:fixed;
+  padding:30px 20px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  transition: width var(--transition);
+}
+.sidebar h2{
+  font-weight:700;
+  margin-bottom:30px;
+  text-align:center;
+}
+.sidebar a{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#fff;
+  text-decoration:none;
+  padding:12px 14px;
+  border-radius:12px;
+  transition: background var(--transition), transform var(--transition);
+}
+.sidebar a i{
+  font-style: normal; /* Using letters as icons placeholder */
+  width:20px; text-align:center;
+}
+.sidebar a.active, .sidebar a:hover{
+  background: linear-gradient(90deg,var(--primary),#3b82f6);
+  transform: translateX(5px);
+}
+
+/* Main content */
+.main{
+  margin-left:270px;
+  padding:30px;
+  transition: margin-left var(--transition), padding var(--transition);
+}
+.main h1{
+  margin-bottom:20px;
+  font-weight:700;
+  color:var(--primary);
+}
+
+/* Cards */
+.card{
+  background:lightcoral;
+  padding:25px;
+  border-radius:16px;
+  box-shadow:0 12px 25px var(--card-shadow);
+  transition: transform var(--transition), box-shadow var(--transition);
+  margin-bottom:20px;
+}
+.card:hover{
+  transform: translateY(-5px);
+  box-shadow:0 18px 30px rgba(0,0,0,0.15);
+}
+
+/* Form */
+.form-row{
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+}
+input, textarea{
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  width:100%;
+  transition: border var(--transition), box-shadow var(--transition);
+}
+input:focus, textarea:focus{
+  border-color: var(--primary);
+  box-shadow:0 0 10px rgba(108,99,255,0.2);
+  outline:none;
+}
+label{
+  font-weight:500;
+  margin-bottom:6px;
+  display:block;
+}
+
+/* Button */
+button{
+  background: linear-gradient(90deg,var(--primary),var(--accent));
+  color:#fff;
+  padding:12px 18px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:500;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+button:hover{
+  transform: translateY(-2px);
+  box-shadow:0 6px 15px rgba(108,99,255,0.3);
+}
+
+/* Message */
+#msg{
+  margin-top:10px;
+  color:green;
+  font-weight:500;
+  opacity:0;
+  transition: opacity 0.5s ease-in-out;
+}
+#msg.show{
+  opacity:1;
+}
+
+/* Profile Picture */
+#profilePicContainer{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:20px;
+}
+#profilePicContainer img{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid var(--primary);
+  margin-bottom:12px;
+  transition: transform var(--transition);
+}
+#profilePicContainer img:hover{
+  transform: scale(1.05);
+}
+#profilePicInput{
+  display:none;
+}
+#uploadLabel{
+  background: var(--accent);
+  color:#fff;
+  padding:6px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  transition: background var(--transition);
+}
+#uploadLabel:hover{
+  background:#00b394;
+}
+
+/* Activity Summary */
+.summary{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+.summary .stat{
+  flex:1;
+  min-width:150px;
+  background: linear-gradient(135deg,#6C63FF,#00C9A7);
+  color:#fff;
+  padding:20px;
+  border-radius:16px;
+  text-align:center;
+  font-weight:500;
+  box-shadow:0 8px 20px rgba(0,0,0,0.1);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.summary .stat:hover{
+  transform: translateY(-5px);
+  box-shadow:0 12px 25px rgba(0,0,0,0.15);
+}
+.summary .stat h2{
+  font-size:28px;
+  margin-bottom:8px;
+}
+
+/* Responsive */
+@media (max-width:900px){
+  .sidebar{position:relative;width:100%;height:auto;padding:20px;}
+  .main{margin-left:0;padding:20px;}
+  .summary{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <h2>AcadTrack</h2>
+  <a href="dashboard.html"><i>🏠</i> Dashboard</a>
+  <a href="activities.html"><i>📋</i> Activities</a>
+  <a href="calendar.html"><i>📅</i> Calendar</a>
+  <a href="profile.html" class="active"><i>👤</i> Profile</a>
+  <a href="../logout.html" style="margin-top:12px"><i>🚪</i> Logout</a>
+</nav>
+
+<main class="main">
+  <h1>Student Profile</h1>
+
+  <!-- Profile Picture -->
+  <div class="card" id="profilePicContainer">
+    <img id="profilePic" src="" alt="Profile Picture"/>
+    <label for="profilePicInput" id="uploadLabel">Upload Picture</label>
+    <input type="file" id="profilePicInput" accept="image/*"/>
+  </div>
+
+  <!-- Profile Form -->
+  <div class="card">
+    <form id="profileForm">
+      <div class="form-row">
+        <div style="flex:1">
+          <label for="name">Full Name</label>
+          <input id="name" type="text" required placeholder="Enter your full name"/>
+        </div>
+        <div style="flex:1">
+          <label for="strand">Strand / Section</label>
+          <input id="strand" type="text" placeholder="e.g., ICT / 11-A"/>
+        </div>
+      </div>
+      <div style="margin-top:16px">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="yourname@example.com"/>
+      </div>
+      <div style="margin-top:16px">
+        <label for="about">About (optional)</label>
+        <textarea id="about" rows="4" placeholder="Write a short bio..."></textarea>
+      </div>
+      <div style="margin-top:20px">
+        <button type="submit">Save Profile</button>
+      </div>
+      <div id="msg">Profile Saved!</div>
+    </form>
+  </div>
+
+  <!-- Activity Summary -->
+  <div class="card summary">
+    <div class="stat">
+      <h2 id="totalActivities">0</h2>
+      Total Activities
+    </div>
+    <div class="stat">
+      <h2 id="completedActivities">0</h2>
+      Completed
+    </div>
+    <div class="stat">
+      <h2 id="pendingActivities">0</h2>
+      Pending
+    </div>
+  </div>
+
+</main>
+
+<script>
+// Seed default profile
+if(!localStorage.getItem('studentProfile')){
+  localStorage.setItem('studentProfile', JSON.stringify({
+    name:"",
+    strand:"",
+    email:"",
+    about:"",
+    profilePic:""
+  }));
+}
+
+// Load profile
+const profile = JSON.parse(localStorage.getItem('studentProfile'));
+document.getElementById('name').value = profile.name || '';
+document.getElementById('strand').value = profile.strand || '';
+document.getElementById('email').value = profile.email || '';
+document.getElementById('about').value = profile.about || '';
+document.getElementById('profilePic').src = profile.profilePic || 'https://via.placeholder.com/120';
+
+// Profile picture upload
+const profilePicInput = document.getElementById('profilePicInput');
+const profilePic = document.getElementById('profilePic');
+
+profilePicInput.addEventListener('change', function(){
+  const file = this.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      profilePic.src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+  }
+});
+
+// Save profile
+document.getElementById('profileForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  profile.name = document.getElementById('name').value.trim();
+  profile.strand = document.getElementById('strand').value.trim();
+  profile.email = document.getElementById('email').value.trim();
+  profile.about = document.getElementById('about').value.trim();
+  profile.profilePic = profilePic.src;
+  localStorage.setItem('studentProfile', JSON.stringify(profile));
+  
+  const msg = document.getElementById('msg'); 
+  msg.classList.add('show');
+  setTimeout(()=> msg.classList.remove('show'), 1500);
+});
+
+// Mock Activity Summary (this could be dynamic in real system)
+const total = 12, completed = 8, pending = total - completed;
+document.getElementById('totalActivities').textContent = total;
+document.getElementById('completedActivities').textContent = completed;
+document.getElementById('pendingActivities').textContent = pending;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About | AcadTrack</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #6a5acd, #4b0082);
+      color: #fff;
+      margin: 0;
+      overflow-x: hidden;
+      backdrop-filter: blur(2px);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 50px;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+    }
+
+    .logo {
+      width: 50px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: #ffd700;
+      border-bottom: 2px solid #ffd700;
+      padding-bottom: 3px;
+    }
+
+    .about-section {
+      text-align: center;
+      padding: 80px 20px;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    .about-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .about-box {
+      max-width: 800px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 30px;
+      border-radius: 20px;
+      margin: auto;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      transition: transform 0.3s;
+    }
+
+    .about-box:hover {
+      transform: scale(1.03);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    ul li {
+      background: rgba(255, 255, 255, 0.1);
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      transition: background 0.3s;
+    }
+
+    ul li:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* 👩‍💻 Team Section */
+    .team-section {
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .team-section h2 {
+      font-size: 2rem;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .team-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .team-member {
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
+      width: 220px;
+      padding: 20px;
+      transition: transform 0.3s;
+    }
+
+    .team-member:hover {
+      transform: translateY(-8px);
+    }
+
+    .team-member img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #ffd700;
+      margin-bottom: 15px;
+    }
+
+    .team-member h3 {
+      font-size: 1.2rem;
+      margin: 10px 0 5px;
+    }
+
+    .team-member p {
+      font-size: 0.95rem;
+      color: paleturquoise;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.6);
+      font-size: 0.9rem;
+      margin-top: 60px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body style="background-image: url('images/about.bg.jpg');
+             background-size: cover;
+             background-repeat: no-repeat;
+             background-position: center;">
+
+<header>
+  <div class="logo-area">
+      <img src="images/logo.jpg" alt="logo" class="logo">
+      <h1>AcadTrack</h1>
+    </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html" class="active">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
+
+<section class="about-section">
+  <div class="about-box">
+    <h2>About AcadTrack</h2>
+    <p>AcadTrack is an ICT Strand Activity Monitoring System built to help teachers and students stay organized, connected, and efficient in managing school activities.</p>
+    <ul>
+      <li>📌 Track ICT-related tasks easily</li>
+      <li>🧑‍💻 Manage and update student profiles</li>
+      <li>📅 Integrated calendar for activity schedules</li>
+      <li>⚙️ Smooth user experience with professional design</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 👩‍💻 Team Members Section -->
+<section class="team-section">
+  <h2>Meet the Developers</h2>
+  <div class="team-container">
+    <div class="team-member">
+      <img src="images/members/angel.jpg" alt="angel">
+      <h3>Jian Angel B. Costelo</h3>
+      <p>Lead Developer & Main Contributor</p>
+    </div>
+
+    <div class="team-member">
+      <img src="images/members/natalie.jpg" alt="Member 2">
+      <h3>Natalie Olivirio</h3>
+      <p>Support Developer & Tester</p>
+    </div>
+
+    <div class="team-member">
+      <img src="images/members/aying.jpg" alt="Member 3">
+      <h3>Kieth Anjo Aying</h3>
+      <p>Documentation & Research</p>
+    </div>
+
+    <div class="team-member">
+      <img src="images/members/colon.jpg" alt="Member 4">
+      <h3>Jay Colon</h3>
+      <p>Project Support & Research</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 AcadTrack | Developed by ICT Students</p>
+</footer>
+</body>
+</html>

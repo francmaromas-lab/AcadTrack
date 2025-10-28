@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AcadTrack Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --primary: #4b6cb7;
+  --secondary: #6C63FF;
+  --accent: #00C9A7;
+  --bg: #f4f6f9;
+  --card-bg: #fff;
+  --text: #2e2e2e;
+  --shadow: rgba(0,0,0,0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ✅ Sidebar (same sa student layout) */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
+  padding: 30px 20px;
+  box-shadow: 2px 0 10px var(--shadow);
+}
+
+.sidebar h2 {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+.sidebar a {
+  display: block;
+  text-decoration: none;
+  color: #fff;
+  padding: 12px 15px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ✅ Main content area aligned properly */
+.main {
+  margin-left: 270px;
+  padding: 40px 35px;
+  width: calc(100% - 270px);
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 15px 25px;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px var(--shadow);
+  margin-bottom: 30px;
+}
+
+.topbar h1 {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.topbar p {
+  color: #555;
+  font-weight: 400;
+}
+
+/* Cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: #fff8dc;
+  padding: 25px 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: var(--primary);
+}
+
+.card p {
+  color: #555;
+  font-size: 14px;
+}
+
+.card ul {
+  list-style: none;
+  padding-left: 0;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.card ul li {
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* Chart container */
+.chart-container {
+  background: lightsalmon;
+  padding: 25px 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px var(--shadow);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+  .main {
+    margin-left: 0;
+    width: 100%;
+    padding: 20px;
+  }
+}
+</style>
+</head>
+<body>
+
+<script>
+function goBack(){
+    window.location.href='../welcome.html';
+}
+</script>
+
+<!-- ✅ Sidebar -->
+<div class="sidebar">
+  <h2>AcadTrack Admin</h2>
+  <a href="dashboard.html" class="active">🏠 Dashboard</a>
+  <a href="calendar.html">📅 Calendar</a>
+  <a href="manage_activities.html">📝 Activities</a>
+  <a href="reports.html">📊 Reports</a>
+  <a href="students.html">👥 Students</a>
+  <a href="../logout.html">🚪 Logout</a>
+</div>
+
+<!-- ✅ Main Content -->
+<div class="main">
+  <div class="topbar">
+    <h1>Dashboard</h1>
+    <div>
+      <p>Welcome, Admin 👋</p>
+      <button onclick="goBack()">Back</button>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card" id="totalStudentsCard">
+      <h3>Total Students</h3>
+      <p id="totalStudents">0 Students</p>
+      <ul id="studentList"></ul>
+    </div>
+
+    <div class="card" id="activeActivitiesCard">
+      <h3>Active Activities</h3>
+      <ul id="activityList"></ul>
+    </div>
+
+    <div class="card" id="pendingReportsCard">
+      <h3>Pending Reports</h3>
+      <ul id="reportList"></ul>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <h3>Monthly Activities Overview</h3>
+    <canvas id="activityChart" height="80"></canvas>
+  </div>
+</div>
+
+<script>
+// Initialize storage
+if(!localStorage.getItem('students')) localStorage.setItem('students', JSON.stringify([]));
+if(!localStorage.getItem('activities')) localStorage.setItem('activities', JSON.stringify([]));
+if(!localStorage.getItem('reports')) localStorage.setItem('reports', JSON.stringify([]));
+
+function updateDashboard(){
+  const students = JSON.parse(localStorage.getItem('students'));
+  const activities = JSON.parse(localStorage.getItem('activities'));
+  const reports = JSON.parse(localStorage.getItem('reports'));
+
+  document.getElementById('totalStudents').textContent = `${students.length} Students currently enrolled.`;
+  const studentList = document.getElementById('studentList');
+  studentList.innerHTML = '';
+  students.forEach(s=>{
+    const li=document.createElement('li');
+    li.textContent=s.name;
+    studentList.appendChild(li);
+  });
+
+  const activityList = document.getElementById('activityList');
+  activityList.innerHTML = '';
+  activities.forEach(a=>{
+    const li=document.createElement('li');
+    li.textContent = `${a.title} - ${a.date}`;
+    activityList.appendChild(li);
+  });
+
+  const reportList=document.getElementById('reportList');
+  reportList.innerHTML='';
+  reports.filter(r=>r.status==='pending').forEach(r=>{
+    const li=document.createElement('li');
+    li.textContent=r.title;
+    reportList.appendChild(li);
+  });
+
+  renderActivityChart(activities);
+}
+
+let chartInstance;
+function renderActivityChart(activities){
+  const monthlyCounts = new Array(12).fill(0);
+  activities.forEach(a=>{
+    const month = new Date(a.date).getMonth();
+    monthlyCounts[month]++;
+  });
+
+  const ctx=document.getElementById('activityChart').getContext('2d');
+  if(chartInstance) chartInstance.destroy();
+  chartInstance = new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      datasets:[{
+        label:'Activities',
+        data:monthlyCounts,
+        backgroundColor:'rgba(108,99,255,0.7)',
+        borderRadius:8
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false}},
+      scales:{y:{beginAtZero:true, precision:0}}
+    }
+  });
+}
+
+updateDashboard();
+</script>
+
+</body>
+</html>

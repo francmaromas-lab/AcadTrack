@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AcadTrack Admin | Calendar</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #1e3a8a;
+  --accent: #6C63FF;
+  --bg: #f4f6f9;
+  --card-bg: #fff;
+  --text: #2e2e2e;
+  --shadow: rgba(0,0,0,0.1);
+  --today: #2563eb;
+  --activity: #6C63FF;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+
+body {
+  display:flex;
+  min-height:100vh;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.sidebar {
+  width: 250px;
+  background: var(--primary);
+  color: white;
+  display:flex;
+  flex-direction:column;
+  padding:25px 20px;
+  position: fixed;
+  height: 100%;
+  box-shadow: 2px 0 10px var(--shadow);
+}
+
+.sidebar h2 { text-align:center; margin-bottom:30px; font-size:22px; }
+.sidebar a {
+  color:pink; text-decoration:none; padding:12px 15px; border-radius:10px; margin-bottom:10px; display:block; transition:.3s; font-weight:500;
+}
+.sidebar a.active, .sidebar a:hover { background: var(--accent); box-shadow:0 2px 10px var(--shadow); }
+
+.main {
+  margin-left:260px; padding:25px 40px; width:100%;
+}
+
+.header {
+  display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;
+}
+.header h1 { font-size:28px; font-weight:600; }
+.header button { background:var(--primary); color:burlywood; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; margin-left:5px; }
+
+.calendar-container {
+  display:grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap:10px;
+}
+
+.day {
+  background: blanchedalmond;
+  border-radius:12px;
+  padding:15px;
+  min-height:80px;
+  position:relative;
+  cursor:pointer;
+  transition: 0.3s;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.day:hover { transform:translateY(-3px); box-shadow: 0 5px 15px var(--shadow); }
+.day.today { border: 2px solid var(--today); }
+.day .dot { width:8px; height:8px; background:var(--activity); border-radius:50%; position:absolute; bottom:5px; left:50%; transform:translateX(-50%); }
+
+.modal {
+  position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);
+  display:flex; justify-content:center; align-items:center; visibility:hidden; opacity:0; transition:0.3s;
+}
+.modal.active { visibility:visible; opacity:1; }
+.modal-content {
+  background:white; padding:25px; border-radius:16px; width:350px; max-width:90%;
+}
+.modal-content h3 { margin-bottom:15px; color:var(--primary); }
+.modal-content ul { list-style:none; margin-bottom:10px; padding-left:0; max-height:150px; overflow-y:auto; }
+.modal-content ul li { background:#f0f0ff; margin-bottom:8px; padding:8px 12px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; }
+.modal-content button.close { background:#ff4d4f; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; }
+.modal-content button.add { background:var(--accent); color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; margin-top:10px; width:100%; }
+input.activity-input { width:100%; padding:8px; margin-bottom:10px; border-radius:8px; border:1px solid #ccc; }
+
+@media(max-width:768px){
+  .main { margin-left:0; padding:20px; }
+  .calendar-container { grid-template-columns: repeat(2,1fr); gap:8px; }
+}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <h2>AcadTrack Admin</h2>
+  <a href="dashboard.html" class="active"><i>🏠</i> Dashboard</a>
+  <a href="calendar.html"><i>📅</i> Calendar</a>
+  <a href="manage_activities.html"><i>📝</i> Activities</a>
+  <a href="reports.html"><i>📂</i> Reports</a>
+  <a href="students.html"><i>👥</i> Students</a>
+  <a href="../logout.html"><i>🔓</i> Logout</a>
+</div>
+<div class="main">
+  <div class="header">
+    <h1 id="monthYear"></h1>
+    <div>
+      <button onclick="prevMonth()">← Prev</button>
+      <button onclick="nextMonth()">Next →</button>
+    </div>
+  </div>
+  <div class="calendar-container" id="calendar"></div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3 id="modalDate"></h3>
+    <ul id="activityList"></ul>
+    <input type="text" id="activityInput" class="activity-input" placeholder="Add new activity">
+    <button class="add" id="addActivityBtn">Add Activity</button>
+    <button class="close" id="closeModal">Close</button>
+  </div>
+</div>
+
+<script>
+const calendarEl = document.getElementById('calendar');
+const monthYearEl = document.getElementById('monthYear');
+const modal = document.getElementById('modal');
+const modalDateEl = document.getElementById('modalDate');
+const activityListEl = document.getElementById('activityList');
+const activityInput = document.getElementById('activityInput');
+const addActivityBtn = document.getElementById('addActivityBtn');
+const closeModalBtn = document.getElementById('closeModal');
+
+let currentDate = new Date();
+let selectedDateStr = '';
+
+if(!localStorage.getItem('adminActivities')) localStorage.setItem('adminActivities', JSON.stringify({}));
+
+function renderCalendar(){
+  calendarEl.innerHTML='';
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  monthYearEl.textContent = currentDate.toLocaleString('default',{month:'long', year:'numeric'});
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month+1, 0).getDate();
+
+  const activities = JSON.parse(localStorage.getItem('adminActivities'));
+
+  for(let i=0;i<firstDay;i++) calendarEl.appendChild(document.createElement('div'));
+  for(let d=1; d<=lastDate; d++){
+    const dayDiv = document.createElement('div');
+    dayDiv.classList.add('day');
+    const dayStr = `${year}-${month+1}-${d}`;
+    dayDiv.textContent = d;
+    if(d===new Date().getDate() && month===new Date().getMonth()) dayDiv.classList.add('today');
+    if(activities[dayStr]?.length>0){
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      dayDiv.appendChild(dot);
+    }
+    dayDiv.addEventListener('click', ()=>openModal(dayStr));
+    calendarEl.appendChild(dayDiv);
+  }
+}
+
+function openModal(dateStr){
+  selectedDateStr = dateStr;
+  modalDateEl.textContent = `Activities on ${dateStr}`;
+  activityInput.value='';
+  updateActivityList();
+  modal.classList.add('active');
+}
+
+function closeModal(){
+  modal.classList.remove('active');
+}
+
+function updateActivityList(){
+  const activities = JSON.parse(localStorage.getItem('adminActivities'));
+  const list = activities[selectedDateStr] || [];
+  activityListEl.innerHTML='';
+  list.forEach((act,i)=>{
+    const li = document.createElement('li');
+    li.textContent = act;
+    const delBtn = document.createElement('button');
+    delBtn.textContent='Delete';
+    delBtn.addEventListener('click', ()=>{
+      list.splice(i,1);
+      activities[selectedDateStr] = list;
+      localStorage.setItem('adminActivities', JSON.stringify(activities));
+      updateActivityList();
+      renderCalendar();
+    });
+    li.appendChild(delBtn);
+    activityListEl.appendChild(li);
+  });
+}
+
+addActivityBtn.addEventListener('click', ()=>{
+  const val = activityInput.value.trim();
+  if(!val) return;
+  const activities = JSON.parse(localStorage.getItem('adminActivities'));
+  if(!activities[selectedDateStr]) activities[selectedDateStr]=[];
+  activities[selectedDateStr].push(val);
+  localStorage.setItem('adminActivities', JSON.stringify(activities));
+  activityInput.value='';
+  updateActivityList();
+  renderCalendar();
+});
+
+closeModalBtn.addEventListener('click', closeModal);
+
+function prevMonth(){ currentDate.setMonth(currentDate.getMonth()-1); renderCalendar(); }
+function nextMonth(){ currentDate.setMonth(currentDate.getMonth()+1); renderCalendar(); }
+
+renderCalendar();
+</script>
+</body>
+</html>

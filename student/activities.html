@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Activities — AcadTrack</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#6C63FF;
+  --accent:#00C9A7;
+  --bg:#F9F9FF;
+  --text:#2E2E2E;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);}
+.sidebar{width:250px;background:var(--primary);color:green;height:100vh;position:fixed;padding:22px 18px;}
+.sidebar a{display:block;color:white;text-decoration:none;padding:10px;border-radius:8px;margin-bottom:8px;opacity:.95;}
+.sidebar a.active, .sidebar a:hover{background:linear-gradient(90deg,var(--primary),#3b82f6);}
+.main{margin-left:270px;padding:28px;}
+.card{background:burlywood;padding:18px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.06);margin-top:18px;}
+.search{width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;margin-bottom:12px;}
+.activity{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;border:1px solid #eef2ff;margin-bottom:10px;transition:0.3s;}
+.activity:hover{box-shadow:0 4px 15px rgba(0,0,0,0.08);}
+.btn{padding:6px 10px;border-radius:6px;border:none;cursor:pointer;transition:0.3s;margin-left:4px;}
+.btn.done{background:linear-gradient(90deg,#6C63FF,#00C9A7);color:#fff;}
+.btn.edit{background:#facc15;color:#000;}
+.btn.delete{background:#ef4444;color:#fff;}
+.btn:hover{opacity:0.85;}
+.status{font-size:13px;color:#666;margin-bottom:4px;}
+.completed{color:#10b981;font-weight:600;}
+@media (max-width:800px){.sidebar{position:relative;width:100%;height:auto}.main{margin-left:0;padding:16px;}}
+</style>
+</head>
+<body>
+<nav class="sidebar">
+  <h2>AcadTrack</h2>
+  <a href="dashboard.html"><i>🏠</i> Dashboard</a>
+  <a href="activities.html"><i>📋</i> Activities</a>
+  <a href="calendar.html"><i>📅</i> Calendar</a>
+  <a href="profile.html" class="active"><i>👤</i> Profile</a>
+  <a href="../logout.html" style="margin-top:12px"><i>🚪</i> Logout</a>
+</nav>
+
+<main class="main">
+  <h1>Activities</h1>
+  <div class="card">
+    <input id="searchBox" class="search" placeholder="Search activities..." />
+    <div id="list"></div>
+  </div>
+</main>
+
+<script>
+// --- Seed sample activities if empty ---
+if(!localStorage.getItem('activities') || JSON.parse(localStorage.getItem('activities')).length===0){
+  const sample = [
+    {id:1,title:"Quiz 1",desc:"Chapter 1 quiz",date:"2025-10-28"},
+    {id:2,title:"Web Project",desc:"Build a simple website",date:"2025-11-05"},
+    {id:3,title:"Lab",desc:"Networking lab",date:"2025-10-24"}
+  ];
+  localStorage.setItem('activities',JSON.stringify(sample));
+}
+if(!localStorage.getItem('submissions')) localStorage.setItem('submissions','[]');
+
+const getActivities = () => JSON.parse(localStorage.getItem('activities')||'[]');
+const getSubs = () => JSON.parse(localStorage.getItem('submissions')||'[]');
+
+function renderList(query=''){
+  const container = document.getElementById('list');
+  container.innerHTML = '';
+  const items = getActivities().filter(a=>{
+    const str = (a.title+' '+a.desc).toLowerCase();
+    return str.includes(query.toLowerCase());
+  }).sort((a,b)=> new Date(a.date) - new Date(b.date));
+
+  if(items.length===0){ container.innerHTML='<p class="status">No activities found.</p>'; return; }
+
+  const subs = getSubs();
+  const now = new Date();
+
+  items.forEach(a=>{
+    const sub = subs.find(s=>s.activity_id===a.id);
+    const status = sub && sub.status==='done' ? 'Done' : (new Date(a.date)<now ? 'Overdue' : 'Pending');
+    const node = document.createElement('div');
+    node.className='activity';
+    node.innerHTML = `
+      <div>
+        <strong>${a.title}</strong><br/>
+        <div class="status">${a.desc}</div>
+        <div class="status">Date: ${a.date}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="status">${status==='Done'?'<span class="completed">✓ Completed</span>':status}</div>
+        ${status!=='Done'?`<button class="btn done" onclick="markDone(${a.id})">Mark Done</button>`:''}
+        <button class="btn edit" onclick="editActivity(${a.id})">Edit</button>
+        <button class="btn delete" onclick="deleteActivity(${a.id})">Delete</button>
+      </div>`;
+    container.appendChild(node);
+  });
+}
+
+function markDone(id){
+  if(!confirm('Mark this activity as done?')) return;
+  const subs = getSubs();
+  const exist = subs.find(s=>s.activity_id===id);
+  if(exist){ exist.status='done'; exist.submitted_at=new Date().toISOString(); }
+  else subs.push({activity_id:id,status:'done',submitted_at:new Date().toISOString()});
+  localStorage.setItem('submissions',JSON.stringify(subs));
+  renderList(document.getElementById('searchBox').value);
+}
+
+function editActivity(id){
+  const activities = getActivities();
+  const act = activities.find(a=>a.id===id);
+  const newTitle = prompt("Edit title:", act.title);
+  if(newTitle===null) return;
+  const newDesc = prompt("Edit description:", act.desc);
+  if(newDesc===null) return;
+  const newDate = prompt("Edit date (YYYY-MM-DD):", act.date);
+  if(newDate===null) return;
+  act.title=newTitle; act.desc=newDesc; act.date=newDate;
+  localStorage.setItem('activities',JSON.stringify(activities));
+  renderList(document.getElementById('searchBox').value);
+}
+
+function deleteActivity(id){
+  if(!confirm('Are you sure you want to delete this activity?')) return;
+  const activities = getActivities().filter(a=>a.id!==id);
+  localStorage.setItem('activities',JSON.stringify(activities));
+  // Remove submission if exists
+  const subs = getSubs().filter(s=>s.activity_id!==id);
+  localStorage.setItem('submissions',JSON.stringify(subs));
+  renderList(document.getElementById('searchBox').value);
+}
+
+document.getElementById('searchBox').addEventListener('input', e=> renderList(e.target.value));
+renderList();
+</script>
+</body>
+</html>

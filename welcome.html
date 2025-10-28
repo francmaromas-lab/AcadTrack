@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Welcome | AcadTrack</title>
+<style>
+body {
+    font-family:'Poppins',sans-serif;
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: linear-gradient(135deg,#6a5acd,#4b0082);
+    overflow:hidden;
+}
+
+.welcome-box {
+    background: rgba(0,0,0,0.7);
+    padding:50px;
+    border-radius:20px;
+    width:450px;
+    text-align:center;
+    box-shadow:0 0 30px rgba(0,0,0,0.3);
+    opacity:0;
+    transform: translateY(50px);
+    animation: fadeInUp 1s forwards;
+    transition: all 0.5s ease;
+}
+
+h1 {
+    font-size:32px;
+    margin-bottom:10px;
+    color:#ffd700;
+}
+
+h2 {
+    font-size:22px;
+    margin-bottom:15px;
+    color:#fff;
+}
+
+.quote {
+    font-size:14px;
+    font-style:italic;
+    color: palevioletred;
+    margin-bottom:25px;
+}
+
+button {
+    padding:12px 30px;
+    margin:10px;
+    background:#ffd700;
+    border:none;
+    border-radius:8px;
+    color:#4b0082;
+    font-weight:600;
+    cursor:pointer;
+    transition: all 0.4s ease;
+}
+
+button:hover {
+    background:#fff;
+    color:#4b0082;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #ffd700;
+}
+
+@keyframes fadeInUp {
+    to { opacity:1; transform: translateY(0);}
+}
+
+.fadeOut {
+    opacity:0 !important;
+    transform: translateY(50px) !important;
+}
+
+/* Popup */
+#popup {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffd700;
+    color: #4b0082;
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-weight: bold;
+    display: none;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    z-index: 999;
+}
+</style>
+</head>
+<body>
+
+<!-- Popup -->
+<div id="popup">You have successfully logged in!</div>
+
+<div class="welcome-box" id="welcomeBox">
+<h1>Welcome to AcadTrack</h1>
+<div class="quote">"Track. Manage. Succeed. Your progress matters."</div>
+<div class="quote">Choose Your Dashboard!</div>
+<button onclick="enterSystem('admin')">Admin</button>
+<button onclick="enterSystem('student')">Student</button>
+<button onclick="logout()">Log Out</button>
+</div>
+
+<script>
+// Get current user from login
+const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+if(!currentUser){
+    window.location.href = 'login.html'; // redirect if not logged in
+} else {
+    // Update greeting
+    
+
+    // Show popup
+    
+
+    // Hide popup after 2 seconds
+    setTimeout(() => {
+        popup.style.display = 'none';
+    }, 2000);
+}
+
+// Smooth navigation with fade-out effect
+function enterSystem(role){
+    const box = document.getElementById('welcomeBox');
+    box.classList.add('fadeOut');
+    setTimeout(() => {
+        if(role==='admin'){
+            window.location.href='admin/dashboard.html';
+        } else {
+            window.location.href='student/dashboard.html';
+        }
+    }, 500);
+}
+
+// Logout function
+function logout(){
+    const box = document.getElementById('welcomeBox');
+    box.classList.add('fadeOut');
+    setTimeout(() => {
+        localStorage.removeItem('currentUser'); 
+        window.location.href='login.html';
+    }, 500);
+}
+
+// Back button functionality
+function goBack(){
+    const box = document.getElementById('welcomeBox');
+    box.classList.add('fadeOut');
+    setTimeout(() => {
+        window.history.back();
+    }, 500);
+}
+</script>
+
+</body>
+</html>

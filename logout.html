@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Logging Out...</title>
+<style>
+body {
+    font-family:'Poppins',sans-serif;
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: linear-gradient(135deg,#6a5acd,#4b0082);
+    color:#fff;
+    text-align:center;
+}
+button {
+    padding:12px 25px;
+    margin-top:20px;
+    background:#ffd700;
+    border:none;
+    border-radius:8px;
+    color:#4b0082;
+    font-weight:600;
+    cursor:pointer;
+    transition: all 0.3s ease;
+}
+button:hover {
+    background:#fff;
+    transform: scale(1.05);
+}
+</style>
+</head>
+<body>
+
+<div>
+    <h1>You have been logged out!</h1>
+    <p>Click the button below to go back to Login page.</p>
+    <button onclick="goLogin()">Go to Login</button>
+</div>
+
+<script>
+// Clear any stored session / user data
+localStorage.removeItem('currentUser');
+
+function goLogin(){
+    window.location.href='login.html'; // adjust path kung kinahanglan
+}
+</script>
+
+</body>
+</html>

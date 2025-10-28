@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sign Up | AcadTrack</title>
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg,#6a5acd,#4b0082);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+    color:#fff;
+}
+.signup-box {
+    background: rgba(0,0,0,0.5);
+    padding:40px;
+    border-radius:20px;
+    width:350px;
+    text-align:center;
+    box-shadow:0 0 25px rgba(0,0,0,0.2);
+    border:2px solid rgba(255,255,255,0.3);
+}
+h2 { margin-bottom: 20px; }
+input {
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    border:none;
+    background:rgba(255,255,255,0.2);
+    color:#fff;
+    outline:none;
+}
+button {
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    background:#ffd700;
+    border:none;
+    color:#4b0082;
+    font-weight:600;
+    border-radius:8px;
+    cursor:pointer;
+}
+button:hover { background:#fff; color:#4b0082; }
+p a { color:#ffd700; text-decoration:none; }
+p a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="signup-box">
+    <h2>Create Account</h2>
+    <form id="signupForm">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="login.html">Log in</a></p>
+</div>
+
+<script>
+// JS-only simulation
+document.getElementById('signupForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    let users = JSON.parse(localStorage.getItem('users') || '[]');
+    if(users.find(u => u.username === username || u.email === email)){
+        alert('Username or Email already exists');
+        return;
+    }
+
+    users.push({username,email,password});
+    localStorage.setItem('users', JSON.stringify(users));
+    alert('Sign Up Successful! Please Login');
+    window.location.href = 'login.html';
+});
+</script>
+</body>
+</html>
